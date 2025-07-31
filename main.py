@@ -1,41 +1,31 @@
+from stats import get_num_words, count_characters, sort_characters_dict
+import sys
+
+def get_book_text(file_path):
+    with open(file_path) as f:
+        file_contents = f.read()
+    return file_contents
+
 def main():
-    print_report("books/frankenstein.txt")
+    if len(sys.argv) != 2:
+        print("Usage: python3 main.py <path_to_book>")
+        sys.exit(1)
 
-def get_book_text(path):
-    with open(path) as f:
-        print(f.read())
+    file_contents = get_book_text(sys.argv[1])
+    num_words = get_num_words(file_contents)
+    # print(f"{num_words} words found in the document")
 
-def count_words(path):
-    with open(path) as f:
-        content = f.read().split()
-    return len(content)
+    characters_dict = count_characters(file_contents)
+    # print(characters_dict)
 
-def count_characters(path):
-    characters_counts_dict = {chr(i+96):0 for i in range(1,27)}
-
-    with open(path) as f:
-        content = f.read()
-
-    for c in content:
-        if c.isalpha():
-            characters_counts_dict[c.lower()] += 1
-
-    return characters_counts_dict
-
-def print_report(path):
-    characters_counts_dict = count_characters(path) 
-    report_list = [{"characters":key, "num":value} for key,value in characters_counts_dict.items()]
-    report_list.sort(reverse=True,key=sort_on)
+    print("============ BOOKBOT ============")
+    print("Analyzing book found at books/frankenstein.txt...")
+    print("----------- Word Count ----------")
+    print(f"Found {num_words} total words")
+    print("--------- Character Count -------")
+    for dict in sort_characters_dict(characters_dict):
+        print(dict["char"] + ": " + str(dict["num"]))
+    print("============= END ===============")
+    sys.exit(0)
     
-    # Display Report
-    print(f'--- {path} ---')
-    print(f'{count_words(path)} words found in the document')
-
-    for item in report_list:
-        print(f'The {item["characters"]} character was found {item["num"]} items')
-    print('--- End report ---')
-
-def sort_on(dict):
-    return dict['num']
-       
 main()
